@@ -75,16 +75,16 @@ content-type: text/ng-template
       %col{width: "200"}/
       %col{width: "250"}/
     %tr
-      %th.manage-th
+      %th.manage-th{style: "border: 1px solid gray"}
         %a{href: "", "ng-click" => "order = 'name'"}= I18n.t('dashboard_students_name')
-      %th.manage-th
+      %th.manage-th{style: "border: 1px solid gray"}
         %a{href: "", "ng-click" => "order = 'age'"}= I18n.t('dashboard_students_age')
-      %th.manage-th
+      %th.manage-th{style: "border: 1px solid gray"}
         %a{href: "", "ng-click" => "order = 'gender'"}= I18n.t('dashboard_students_gender')
-      %th.manage-th
+      %th.manage-th{style: "border: 1px solid gray"}
         %span{"ng-if" => "section.login_type !== 'email'"}= I18n.t('dashboard_students_secret')
         %span{"ng-if" => "section.login_type === 'email'"}= I18n.t('dashboard_students_password')
-      %th.manage-th
+      %th.manage-th{style: "border: 1px solid gray"}
         %button.btn.btn-primary{"ng-click" => "save(section.students)", "ng-show" => "editingAny(section.students)", style: "float:left", "ng-disabled" => "allForm.$invalid"}= I18n.t('dashboard_action_save_all')
     %tr{"ng-repeat" => "student in section.students | orderBy:order", "ng-form" => "form"}
       %td
