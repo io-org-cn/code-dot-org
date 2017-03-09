@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'open3'
 require 'yaml'
 require_relative 'hooks_utils.rb'
