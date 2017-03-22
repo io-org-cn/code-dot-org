@@ -162,6 +162,17 @@ ActiveRecord::Schema.define(version: 20170324200221) do
     t.index ["user_id", "district_id"], name: "index_districts_users_on_user_id_and_district_id", using: :btree
   end
 
+  create_table "experiments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.integer  "section_id"
+    t.datetime "expiration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["section_id"], name: "index_experiments_on_section_id", using: :btree
+    t.index ["user_id"], name: "index_experiments_on_user_id", using: :btree
+  end
+
   create_table "facilitators_workshops", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "workshop_id",    null: false
     t.integer "facilitator_id", null: false
