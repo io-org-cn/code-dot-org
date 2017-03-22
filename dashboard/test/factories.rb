@@ -2,6 +2,12 @@ require 'cdo/activity_constants'
 
 FactoryGirl.allow_class_lookup = false
 FactoryGirl.define do
+  factory :experiment do
+    name "MyString"
+    user ""
+    section ""
+    expiration "2017-03-22 13:35:06"
+  end
   factory :section_hidden_stage do
     section nil
     stage nil
