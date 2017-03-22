@@ -17,4 +17,12 @@
 #
 
 class Experiment < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :section
+
+  def self.active_experiments(user, script = nil)
+    section = user.sections_as_student.where(script: script) if script
+    where(user: user).or(where(section: section)).
+      where('expiration > ?', DateTime.now)
+  end
 end
