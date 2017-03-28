@@ -42,6 +42,8 @@ class Section < ActiveRecord::Base
 
   has_many :section_hidden_stages
 
+  has_many :experiments
+
   LOGIN_TYPE_PICTURE = 'picture'
   LOGIN_TYPE_WORD = 'word'
 

@@ -318,6 +318,9 @@ class User < ActiveRecord::Base
   has_many :user_scripts, -> {order "-completed_at asc, greatest(coalesce(started_at, 0), coalesce(assigned_at, 0), coalesce(last_progress_at, 0)) desc, user_scripts.id asc"}
   has_many :scripts, -> {where hidden: false}, through: :user_scripts, source: :script
 
+  has_many :experiments
+  has_many :section_experiments, through: :sections_as_student, source: :experiments
+
   validates :name, presence: true
   validates :name, length: {within: 1..70}, allow_blank: true
   validates :name, no_utf8mb4: true
@@ -1251,5 +1254,10 @@ class User < ActiveRecord::Base
   def show_race_interstitial?(ip = nil)
     ip_to_check = ip || current_sign_in_ip
     RaceInterstitialHelper.show_race_interstitial?(self, ip_to_check)
+  end
+
+  def active_experiments
+    experiments.where('expiration > ?', DateTime.now) +
+      section_experiments.where('expiration > ?', DateTime.now)
   end
 end
