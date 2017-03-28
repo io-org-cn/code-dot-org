@@ -83,6 +83,7 @@ export function setupApp(appOptions) {
     }
   }
 
+  experiments.loadExperiments(appOptions.experiments);
   if (experiments.isEnabled('g.bannermode')) {
     var pointsData = JSON.parse(localStorage.getItem(POINTS_KEY) || '{}');
     var totalPoints = 0;

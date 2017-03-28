@@ -83,20 +83,44 @@ experiments.isEnabled = function (key) {
   const disableQuery = query['disableExperiments'];
 
   if (enableQuery) {
-    const experimentsToEnable = enableQuery.split(',');
-    if (experimentsToEnable.indexOf(key) >= 0) {
+    this.experimentsToEnable = enableQuery.split(',');
+    if (this.experimentsToEnable.indexOf(key) >= 0) {
       enabled = true;
       this.setEnabled(key, true);
     }
   }
 
   if (disableQuery) {
-    const experimentsToDisable = disableQuery.split(',');
-    if (experimentsToDisable.indexOf(key) >= 0) {
+    this.experimentsToDisable = disableQuery.split(',');
+    if (this.experimentsToDisable.indexOf(key) >= 0) {
       enabled = false;
       this.setEnabled(key, false);
     }
   }
 
   return enabled;
+};
+
+experiments.postExperiment = function (key, url) {
+  const req = new XMLHttpRequest();
+  req.open('POST', url);
+  req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  console.log(`key=${key}`);
+  req.send(`key=${key}`);
+};
+
+experiments.loadExperiments = function (serverExperiments) {
+  trySetLocalStorage(STORAGE_KEY, JSON.stringify(serverExperiments.enabled));
+  console.log(this.experimentsToEnable);
+  console.log(this.experimentsToDisable);
+  if  (this.experimentsToEnable) {
+    for (let experiment of this.experimentsToEnable) {
+      experiments.postExperiment(experiment, serverExperiments.enableUrl);
+    }
+  }
+  if (this.experimentsToDisable) {
+    for (let experiment of this.experimentsToDisable) {
+      experiments.postExperiment(experiment, serverExperiments.disableUrl);
+    }
+  }
 };
