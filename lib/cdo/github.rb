@@ -58,7 +58,7 @@ module GitHub
   #   or nil if unsuccessful.
   def self.create_and_merge_pull_request(base:, head:, title:)
     pr_number = create_pull_request(base: base, head: head, title: title)
-    success = merge_pull_request(pr_number, commit_message: title)
+    success = merge_pull_request(pr_number, title)
     success ? pr_number : nil
   end
 
