@@ -58,6 +58,7 @@ class Ability
       can [:show, :pull_review, :update], PeerReview, reviewer_id: user.id
       can :read, SectionHiddenStage
       can :create, Pd::TeacherApplication, user_id: user.id
+      can :manage, Experiment, user_id: user.id
 
       if user.teacher?
         can :read, Section, user_id: user.id
@@ -77,6 +78,9 @@ class Ability
           userid == hidden_stage.section.user_id
         end
         can :create, Pd::TeacherApplication, user_id: user.id
+        can :manage, Experiment do |experiment|
+          experiment.section_id && experiment.section.teacher.id == user.id
+        end
       end
 
       if user.facilitator?

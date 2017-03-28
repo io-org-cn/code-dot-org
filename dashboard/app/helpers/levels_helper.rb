@@ -215,6 +215,21 @@ module LevelsHelper
       shouldShowDialog: @level.properties['skip_dialog'].blank? && @level.properties['options'].try(:[], 'skip_dialog').blank?
     }
 
+    if current_user
+      enabled = current_user.active_experiments.
+        map do |experiment|
+          {
+            key: experiment.name,
+            expiration: (experiment.expiration.to_time.to_f * 1000).to_i
+          }
+        end
+      @app_options[:experiments] = {
+        enabled: enabled,
+        disableUrl: experiments_disable_path,
+        enableUrl: experiments_enable_path,
+      }
+    end
+
     @app_options
   end
 
