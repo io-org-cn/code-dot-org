@@ -105,14 +105,11 @@ experiments.postExperiment = function (key, url) {
   const req = new XMLHttpRequest();
   req.open('POST', url);
   req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  console.log(`key=${key}`);
   req.send(`key=${key}`);
 };
 
 experiments.loadExperiments = function (serverExperiments) {
   trySetLocalStorage(STORAGE_KEY, JSON.stringify(serverExperiments.enabled));
-  console.log(this.experimentsToEnable);
-  console.log(this.experimentsToDisable);
   if  (this.experimentsToEnable) {
     for (let experiment of this.experimentsToEnable) {
       experiments.postExperiment(experiment, serverExperiments.enableUrl);
