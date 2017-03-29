@@ -4,6 +4,7 @@ class ExperimentsController < ApplicationController
   load_and_authorize_resource
   skip_before_action :verify_authenticity_token
 
+  # POST /experiments/enable
   def enable
     key = params[:key]
     section_id = params[:section_id]
@@ -27,6 +28,7 @@ class ExperimentsController < ApplicationController
     end
   end
 
+  # POST /experiments/disable
   def disable
     key = params[:key]
     section_id = params[:section_id]
