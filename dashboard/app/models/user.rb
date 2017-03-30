@@ -287,10 +287,10 @@ class User < ActiveRecord::Base
 
   has_many :gallery_activities, -> {order 'id desc'}
 
-  # student/teacher relationships where I am the teacher
-  has_many :followers
-  has_many :students, through: :followers, source: :student_user
+  # Relationships (sections/followers/students) from being a teacher.
   has_many :sections
+  has_many :followers, through: :sections
+  has_many :students, through: :followers, source: :student_user
 
   # sections will include those that have been deleted until/unless we do the work
   # to enable the paranoia gem. This method will return only sections that have
@@ -299,10 +299,11 @@ class User < ActiveRecord::Base
     sections.where(deleted_at: nil)
   end
 
-  # student/teacher relationships where I am the student
+  # Relationships (sections_as_students/followeds/teachers) from being a
+  # student.
   has_many :followeds, -> {order 'followers.id'}, class_name: 'Follower', foreign_key: 'student_user_id'
-  has_many :teachers, through: :followeds, source: :user
   has_many :sections_as_student, through: :followeds, source: :section
+  has_many :teachers, through: :sections_as_student, source: :user
 
   has_one :prize
   has_one :teacher_prize
@@ -560,7 +561,7 @@ class User < ActiveRecord::Base
       where(
         [
           'username = :value OR email = :value OR hashed_email = :hashed_value',
-          { value: login.downcase, hashed_value: hash_email(login.downcase) }
+          {value: login.downcase, hashed_value: hash_email(login.downcase)}
         ]
       ).first
     elsif hashed_email = conditions.delete(:hashed_email)
@@ -639,7 +640,7 @@ class User < ActiveRecord::Base
       script_level_index = last_script_level.chapter - 1 if last_script_level
     end
 
-    next_unpassed = script.script_levels[script_level_index..-1].detect do |script_level|
+    next_unpassed = script.script_levels[script_level_index..-1].try(:detect) do |script_level|
       user_levels = script_level.level_ids.map {|id| user_levels_by_level[id]}
       unpassed_progression_level?(script_level, user_levels)
     end
@@ -702,11 +703,11 @@ class User < ActiveRecord::Base
     if !script_sections.empty?
       # if we have one or more sections matching this script id, we consider a stage hidden if all of those sections
       # hides the stage
-      script_sections.all? {|s| script_level.stage_hidden_for_section?(s.id) }
+      script_sections.all? {|s| script_level.stage_hidden_for_section?(s.id)}
     else
       # if we have no sections matching this script id, we consider a stage hidden if any of the sections we're in
       # hide it
-      sections.any? {|s| script_level.stage_hidden_for_section?(s.id) }
+      sections.any? {|s| script_level.stage_hidden_for_section?(s.id)}
     end
   end
 
@@ -877,7 +878,7 @@ class User < ActiveRecord::Base
   end
 
   def all_advertised_scripts_completed?
-    advertised_scripts.all? { |script| completed?(script) }
+    advertised_scripts.all? {|script| completed?(script)}
   end
 
   def completed?(script)
@@ -1159,7 +1160,7 @@ class User < ActiveRecord::Base
   end
 
   def can_pair_with?(other_user)
-    self != other_user && sections_as_student.any? { |section| other_user.sections_as_student.include? section }
+    self != other_user && sections_as_student.any? {|section| other_user.sections_as_student.include? section}
   end
 
   def self.csv_attributes
@@ -1168,7 +1169,7 @@ class User < ActiveRecord::Base
   end
 
   def to_csv
-    User.csv_attributes.map { |attr| send(attr) }
+    User.csv_attributes.map {|attr| send(attr)}
   end
 
   def self.progress_queue
@@ -1207,7 +1208,7 @@ class User < ActiveRecord::Base
   end
 
   def section_for_script(script)
-    followeds.collect(&:section).find { |section| section.script_id == script.id }
+    followeds.collect(&:section).find {|section| section.script_id == script.id}
   end
 
   # Returns the version of our Terms of Service we consider the user as having
