@@ -69,6 +69,7 @@ var baseConfig = {
     ],
     noParse: [
       /html2canvas/,
+      /applab-api/,
     ],
   },
 };
